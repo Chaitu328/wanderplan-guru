@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,8 +12,16 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-import { PlaneTakeoff, Calendar, Users, Heart } from "lucide-react";
+import { PlaneTakeoff, Calendar as CalendarIcon, Users, Heart } from "lucide-react";
 import { SettingsDialog } from "@/components/SettingsDialog";
+import { Calendar } from "@/components/ui/calendar";
+import { format } from "date-fns";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 interface TripDetails {
   source: string;
@@ -28,6 +35,7 @@ interface TripDetails {
 const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [tripPlan, setTripPlan] = useState<string>("");
+  const [date, setDate] = useState<Date>();
   const [formData, setFormData] = useState<TripDetails>({
     source: "",
     destination: "",
@@ -136,17 +144,36 @@ const Index = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="dates" className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
+                  <CalendarIcon className="w-4 h-4" />
                   Travel Dates
                 </Label>
-                <Input
-                  id="dates"
-                  type="text"
-                  placeholder="When do you plan to travel?"
-                  value={formData.dates}
-                  onChange={(e) => handleInputChange("dates", e.target.value)}
-                  required
-                />
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !date && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {date ? format(date, "PPP") : <span>Pick a date</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={date}
+                      onSelect={(newDate) => {
+                        setDate(newDate);
+                        if (newDate) {
+                          handleInputChange("dates", format(newDate, "PPP"));
+                        }
+                      }}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
 
               <div className="space-y-2">
