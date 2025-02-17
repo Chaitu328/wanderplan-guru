@@ -8,6 +8,17 @@ export async function POST(req: Request) {
   }
 
   try {
+    const apiKey = req.headers.get("X-GROQ-API-KEY");
+    if (!apiKey) {
+      return new Response(
+        JSON.stringify({ error: "GROQ API key is required" }),
+        {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
+
     const body = await req.json();
     const { source, destination, dates, budget, travelers, interests } = body;
 

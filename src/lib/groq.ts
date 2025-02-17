@@ -3,10 +3,17 @@ import { ChatGroq } from "@langchain/groq";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import { PromptTemplate } from "@langchain/core/prompts";
 
-const groq = new ChatGroq({
-  apiKey: process.env.GROQ_API_KEY,
-  model: "mixtral-8x7b-32768",
-});
+const getGroqClient = () => {
+  const apiKey = localStorage.getItem("GROQ_API_KEY");
+  if (!apiKey) {
+    throw new Error("GROQ API key not found");
+  }
+
+  return new ChatGroq({
+    apiKey,
+    model: "mixtral-8x7b-32768",
+  });
+};
 
 const parser = new StringOutputParser();
 
@@ -49,6 +56,7 @@ export const generateTripPlan = async ({
   travelers: string;
   interests: string;
 }) => {
+  const groq = getGroqClient();
   const chain = promptTemplate.pipe(groq).pipe(parser);
 
   const response = await chain.invoke({

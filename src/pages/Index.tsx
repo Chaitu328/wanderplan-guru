@@ -14,6 +14,7 @@ import {
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { PlaneTakeoff, Calendar, Users, Heart } from "lucide-react";
+import { SettingsDialog } from "@/components/SettingsDialog";
 
 interface TripDetails {
   source: string;
@@ -38,12 +39,20 @@ const Index = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const apiKey = localStorage.getItem("GROQ_API_KEY");
+    
+    if (!apiKey) {
+      toast.error("Please set your GROQ API key in settings first");
+      return;
+    }
+
     setIsLoading(true);
     try {
       const response = await fetch("/api/generate-trip-plan", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "X-GROQ-API-KEY": apiKey,
         },
         body: JSON.stringify(formData),
       });
@@ -81,12 +90,17 @@ const Index = () => {
         transition={{ duration: 0.5 }}
         className="max-w-3xl mx-auto"
       >
-        <h1 className="text-4xl font-bold text-center text-gray-900 mb-2">
-          WanderPlan
-        </h1>
-        <p className="text-center text-gray-600 mb-8">
-          Plan your perfect journey with our AI travel assistant
-        </p>
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-4xl font-bold text-gray-900">
+              WanderPlan
+            </h1>
+            <p className="text-gray-600">
+              Plan your perfect journey with our AI travel assistant
+            </p>
+          </div>
+          <SettingsDialog />
+        </div>
 
         <Card className="p-6 shadow-lg bg-white/80 backdrop-blur-sm">
           <form onSubmit={handleSubmit} className="space-y-6">
