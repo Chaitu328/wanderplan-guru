@@ -17,7 +17,7 @@ Create a detailed travel plan based on the following information:
 Departure City: {source}
 Destination: {destination}
 Travel Dates: {dates}
-Budget: ${budget}
+Budget: \${budget}
 Number of Travelers: {travelers}
 Interests: {interests}
 
