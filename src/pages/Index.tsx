@@ -47,10 +47,10 @@ const Index = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const apiKey = localStorage.getItem("GROQ_API_KEY");
+    const apiKey = localStorage.getItem("GEMINI_API_KEY");
     
     if (!apiKey) {
-      toast.error("Please set your GROQ API key in settings first");
+      toast.error("Please set your Gemini API key in settings first");
       return;
     }
 
@@ -60,7 +60,7 @@ const Index = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-GROQ-API-KEY": apiKey,
+          "X-GEMINI-API-KEY": apiKey,
         },
         body: JSON.stringify(formData),
       });

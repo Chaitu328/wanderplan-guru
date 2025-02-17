@@ -17,14 +17,14 @@ export function SettingsDialog() {
   const [apiKey, setApiKey] = useState("");
 
   useEffect(() => {
-    const savedKey = localStorage.getItem("GROQ_API_KEY");
+    const savedKey = localStorage.getItem("GEMINI_API_KEY");
     if (savedKey) {
       setApiKey(savedKey);
     }
   }, []);
 
   const handleSave = () => {
-    localStorage.setItem("GROQ_API_KEY", apiKey);
+    localStorage.setItem("GEMINI_API_KEY", apiKey);
     toast.success("API key saved successfully!");
   };
 
@@ -41,23 +41,23 @@ export function SettingsDialog() {
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="space-y-2">
-            <Label htmlFor="groq-api-key">GROQ API Key</Label>
+            <Label htmlFor="gemini-api-key">Gemini API Key</Label>
             <Input
-              id="groq-api-key"
+              id="gemini-api-key"
               type="password"
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
-              placeholder="Enter your GROQ API key"
+              placeholder="Enter your Gemini API key"
             />
             <p className="text-sm text-muted-foreground">
               Get your API key from{" "}
               <a
-                href="https://groq.com/docs/api/quickstart"
+                href="https://makersuite.google.com/app/apikey"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:underline"
               >
-                GROQ Console
+                Google AI Studio
               </a>
             </p>
           </div>

@@ -1,5 +1,5 @@
 
-import { generateTripPlan } from "@/lib/groq";
+import { generateTripPlan } from "@/lib/gemini";
 import { corsHeaders } from "@/lib/cors";
 
 export async function POST(req: Request) {
@@ -8,10 +8,10 @@ export async function POST(req: Request) {
   }
 
   try {
-    const apiKey = req.headers.get("X-GROQ-API-KEY");
+    const apiKey = req.headers.get("X-GEMINI-API-KEY");
     if (!apiKey) {
       return new Response(
-        JSON.stringify({ error: "GROQ API key is required" }),
+        JSON.stringify({ error: "Gemini API key is required" }),
         {
           status: 401,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
