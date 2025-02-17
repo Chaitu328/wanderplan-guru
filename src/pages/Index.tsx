@@ -234,8 +234,8 @@ const Index = () => {
           >
             <Card className="p-6 shadow-lg bg-white/80 backdrop-blur-sm">
               <h2 className="text-2xl font-semibold mb-4">Your Trip Plan</h2>
-              <div className="prose max-w-none">
-                <pre className="whitespace-pre-wrap">{tripPlan}</pre>
+              <div className="prose prose-sm md:prose-base lg:prose-lg max-w-none dark:prose-invert prose-headings:font-semibold prose-a:text-primary">
+                <div className="whitespace-pre-wrap markdown">{tripPlan}</div>
               </div>
             </Card>
           </motion.div>

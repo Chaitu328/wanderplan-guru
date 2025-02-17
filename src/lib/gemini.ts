@@ -21,16 +21,47 @@ Number of Travelers: ${formData.travelers}
 Interests: ${formData.interests}
 
 Please provide a comprehensive travel plan that includes:
-1. Transportation recommendations
-2. Accommodation suggestions within budget
-3. Daily activities and attractions based on interests
-4. Dining recommendations
-5. Estimated costs breakdown
-6. Local tips and cultural considerations
-7. Weather considerations for the dates
-8. Safety tips if relevant
 
-Format the response in a clear, organized manner with sections and bullet points where appropriate.
+## Transportation
+- Detailed transportation recommendations including flights, local transport options
+
+## Accommodation
+- Accommodation suggestions within the specified budget
+- Recommended areas to stay
+
+## Daily Activities
+- Day-by-day breakdown of activities based on interests
+- Must-visit attractions
+- Hidden gems and local experiences
+
+## Dining
+- Restaurant recommendations for different budgets
+- Local cuisine highlights
+- Special dining experiences
+
+## Budget Breakdown
+- Estimated costs for:
+  * Transportation
+  * Accommodation
+  * Activities
+  * Food & Dining
+  * Miscellaneous
+
+## Local Tips
+- Cultural considerations
+- Local customs and etiquette
+- Language tips if relevant
+
+## Weather & Packing
+- Weather forecast for the dates
+- Packing recommendations
+
+## Safety Tips
+- Important safety information
+- Emergency contacts
+- Areas to avoid if any
+
+Format the response using proper markdown with headers, bullet points, and clear sections.
 `;
 
   const response = await fetch(
