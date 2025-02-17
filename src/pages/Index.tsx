@@ -22,6 +22,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { generateTripPlan } from "@/lib/gemini";
 
 interface TripDetails {
   source: string;
@@ -56,21 +57,8 @@ const Index = () => {
 
     setIsLoading(true);
     try {
-      const response = await fetch("/api/generate-trip-plan", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-GEMINI-API-KEY": apiKey,
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to generate trip plan");
-      }
-
-      const data = await response.json();
-      setTripPlan(data.plan);
+      const plan = await generateTripPlan(formData, apiKey);
+      setTripPlan(plan);
       toast.success("Trip plan generated successfully!");
     } catch (error) {
       toast.error("Failed to generate trip plan. Please try again.");

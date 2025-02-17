@@ -1,34 +1,24 @@
 
-const generateTripPlan = async ({
-  source,
-  destination,
-  dates,
-  budget,
-  travelers,
-  interests,
-}: {
+interface TripDetails {
   source: string;
   destination: string;
   dates: string;
   budget: string;
   travelers: string;
   interests: string;
-}) => {
-  const apiKey = localStorage.getItem("GEMINI_API_KEY");
-  if (!apiKey) {
-    throw new Error("Gemini API key not found");
-  }
+}
 
+export const generateTripPlan = async (formData: TripDetails, apiKey: string) => {
   const prompt = `
 You are a knowledgeable travel agent with expertise in creating personalized travel itineraries. 
 Create a detailed travel plan based on the following information:
 
-Departure City: ${source}
-Destination: ${destination}
-Travel Dates: ${dates}
-Budget: $${budget}
-Number of Travelers: ${travelers}
-Interests: ${interests}
+Departure City: ${formData.source}
+Destination: ${formData.destination}
+Travel Dates: ${formData.dates}
+Budget: $${formData.budget}
+Number of Travelers: ${formData.travelers}
+Interests: ${formData.interests}
 
 Please provide a comprehensive travel plan that includes:
 1. Transportation recommendations
@@ -71,5 +61,3 @@ Format the response in a clear, organized manner with sections and bullet points
   const data = await response.json();
   return data.candidates[0].content.parts[0].text;
 };
-
-export { generateTripPlan };
