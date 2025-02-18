@@ -23,34 +23,37 @@ export const searchFlights = async ({
   const data = await response.json();
   
   // Transform the API response to match our Flight interface
-  const flights = (data.flights || []).map((flight: any) => ({
-    departure_airport: {
-      name: flight.departure_airport?.name || flight.departure,
-      code: flight.departure_airport?.code || source,
-    },
-    arrival_airport: {
-      name: flight.arrival_airport?.name || flight.arrival,
-      code: flight.arrival_airport?.code || destination,
-    },
-    departure: {
-      time: flight.departure_time || "N/A",
-      date: flight.departure_date || date,
-    },
-    arrival: {
-      time: flight.arrival_time || "N/A",
-      date: flight.arrival_date || date,
-    },
-    airline: {
-      name: flight.airline || "Unknown Airline",
-      logo: flight.airline_logo || "",
-    },
-    price: {
-      amount: parseFloat(flight.price?.replace(/[^0-9.]/g, "") || "0"),
-      currency: "USD",
-    },
-    duration: flight.duration || "N/A",
-    stops: flight.stops || 0,
-  }));
+  const flights = (data.best_flights || []).map((bestFlight: any) => {
+    const firstFlight = bestFlight.flights[0]; // Get the first flight segment
+    return {
+      departure_airport: {
+        name: firstFlight.departure_airport.name,
+        code: firstFlight.departure_airport.id,
+      },
+      arrival_airport: {
+        name: firstFlight.arrival_airport.name,
+        code: firstFlight.arrival_airport.id,
+      },
+      departure: {
+        time: firstFlight.departure_airport.time,
+        date: date,
+      },
+      arrival: {
+        time: firstFlight.arrival_airport.time,
+        date: date,
+      },
+      airline: {
+        name: firstFlight.airline,
+        logo: firstFlight.airline_logo,
+      },
+      price: {
+        amount: bestFlight.price,
+        currency: "USD",
+      },
+      duration: `${Math.floor(bestFlight.total_duration / 60)}h ${bestFlight.total_duration % 60}m`,
+      stops: bestFlight.layovers ? bestFlight.layovers.length : 0,
+    };
+  });
 
   return flights;
 };
