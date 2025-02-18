@@ -12,8 +12,12 @@ export const searchFlights = async ({
   date,
   apiKey,
 }: FlightSearchParams) => {
+  // Convert airport codes to uppercase
+  const sourceCode = source.toUpperCase();
+  const destinationCode = destination.toUpperCase();
+
   const response = await fetch(
-    `https://serpapi.com/search.json?engine=google_flights&departure_id=${source}&arrival_id=${destination}&outbound_date=${date}&api_key=${apiKey}`
+    `https://serpapi.com/search.json?engine=google_flights&departure_id=${sourceCode}&arrival_id=${destinationCode}&outbound_date=${date}&currency=USD&hl=en&type=2&api_key=${apiKey}`
   );
 
   if (!response.ok) {
