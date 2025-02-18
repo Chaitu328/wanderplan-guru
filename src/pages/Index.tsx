@@ -26,6 +26,7 @@ import {
 import { cn } from "@/lib/utils";
 import { generateTripPlan } from "@/lib/gemini";
 import { searchFlights } from "@/lib/serpapi";
+import { FlightTable } from "@/components/FlightTable";
 
 interface TripDetails {
   source: string;
@@ -269,8 +270,15 @@ const Index = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="mt-8"
+            className="mt-8 space-y-8"
           >
+            {flightData && flightData.length > 0 && (
+              <Card className="p-6 shadow-lg bg-white/80 backdrop-blur-sm">
+                <h2 className="text-2xl font-semibold mb-4">Available Flights</h2>
+                <FlightTable flights={flightData} />
+              </Card>
+            )}
+            
             <Card className="p-6 shadow-lg bg-white/80 backdrop-blur-sm">
               <h2 className="text-2xl font-semibold mb-4">Your Trip Plan</h2>
               <div className="prose prose-sm md:prose-base lg:prose-lg max-w-none dark:prose-invert prose-headings:font-semibold prose-a:text-primary">
