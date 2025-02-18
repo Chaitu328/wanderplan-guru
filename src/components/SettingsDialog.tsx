@@ -14,18 +14,20 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 
 export function SettingsDialog() {
-  const [apiKey, setApiKey] = useState("");
+  const [geminiApiKey, setGeminiApiKey] = useState("");
+  const [serpApiKey, setSerpApiKey] = useState("");
 
   useEffect(() => {
-    const savedKey = localStorage.getItem("GEMINI_API_KEY");
-    if (savedKey) {
-      setApiKey(savedKey);
-    }
+    const savedGeminiKey = localStorage.getItem("GEMINI_API_KEY");
+    const savedSerpKey = localStorage.getItem("SERP_API_KEY");
+    if (savedGeminiKey) setGeminiApiKey(savedGeminiKey);
+    if (savedSerpKey) setSerpApiKey(savedSerpKey);
   }, []);
 
   const handleSave = () => {
-    localStorage.setItem("GEMINI_API_KEY", apiKey);
-    toast.success("API key saved successfully!");
+    localStorage.setItem("GEMINI_API_KEY", geminiApiKey);
+    localStorage.setItem("SERP_API_KEY", serpApiKey);
+    toast.success("API keys saved successfully!");
   };
 
   return (
@@ -45,8 +47,8 @@ export function SettingsDialog() {
             <Input
               id="gemini-api-key"
               type="password"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
+              value={geminiApiKey}
+              onChange={(e) => setGeminiApiKey(e.target.value)}
               placeholder="Enter your Gemini API key"
             />
             <p className="text-sm text-muted-foreground">
@@ -58,6 +60,27 @@ export function SettingsDialog() {
                 className="text-primary hover:underline"
               >
                 Google AI Studio
+              </a>
+            </p>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="serp-api-key">SerpAPI Key</Label>
+            <Input
+              id="serp-api-key"
+              type="password"
+              value={serpApiKey}
+              onChange={(e) => setSerpApiKey(e.target.value)}
+              placeholder="Enter your SerpAPI key"
+            />
+            <p className="text-sm text-muted-foreground">
+              Get your API key from{" "}
+              <a
+                href="https://serpapi.com/dashboard"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                SerpAPI Dashboard
               </a>
             </p>
           </div>

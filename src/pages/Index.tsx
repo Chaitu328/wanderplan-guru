@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import ReactMarkdown from 'react-markdown';
 import {
   Select,
   SelectContent,
@@ -16,6 +17,7 @@ import { PlaneTakeoff, Calendar as CalendarIcon, Users, Heart } from "lucide-rea
 import { SettingsDialog } from "@/components/SettingsDialog";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Popover,
   PopoverContent,
@@ -23,6 +25,7 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { generateTripPlan } from "@/lib/gemini";
+import { searchFlights } from "@/lib/serpapi";
 
 interface TripDetails {
   source: string;
@@ -31,11 +34,13 @@ interface TripDetails {
   budget: string;
   travelers: string;
   interests: string;
+  includeFlights?: boolean;
 }
 
 const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [tripPlan, setTripPlan] = useState<string>("");
+  const [flightData, setFlightData] = useState<any>(null);
   const [date, setDate] = useState<Date>();
   const [formData, setFormData] = useState<TripDetails>({
     source: "",
@@ -44,21 +49,42 @@ const Index = () => {
     budget: "",
     travelers: "1",
     interests: "",
+    includeFlights: false,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const apiKey = localStorage.getItem("GEMINI_API_KEY");
+    const geminiApiKey = localStorage.getItem("GEMINI_API_KEY");
+    const serpApiKey = localStorage.getItem("SERP_API_KEY");
     
-    if (!apiKey) {
+    if (!geminiApiKey) {
       toast.error("Please set your Gemini API key in settings first");
+      return;
+    }
+
+    if (formData.includeFlights && !serpApiKey) {
+      toast.error("Please set your SerpAPI key in settings to search flights");
       return;
     }
 
     setIsLoading(true);
     try {
-      const plan = await generateTripPlan(formData, apiKey);
-      setTripPlan(plan);
+      let flightInfo = "";
+      if (formData.includeFlights && serpApiKey) {
+        const flights = await searchFlights({
+          source: formData.source,
+          destination: formData.destination,
+          date: formData.dates,
+          apiKey: serpApiKey,
+        });
+        setFlightData(flights);
+        flightInfo = `\n\n## Available Flights\n${flights.map((flight: any) => 
+          `- ${flight.airline}: ${flight.departure} to ${flight.arrival} - $${flight.price}`
+        ).join('\n')}`;
+      }
+
+      const plan = await generateTripPlan(formData, geminiApiKey);
+      setTripPlan(plan + flightInfo);
       toast.success("Trip plan generated successfully!");
     } catch (error) {
       toast.error("Failed to generate trip plan. Please try again.");
@@ -70,7 +96,7 @@ const Index = () => {
 
   const handleInputChange = (
     field: keyof TripDetails,
-    value: string
+    value: string | boolean
   ) => {
     setFormData((prev) => ({
       ...prev,
@@ -213,6 +239,19 @@ const Index = () => {
                   required
                 />
               </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="includeFlights"
+                  checked={formData.includeFlights}
+                  onCheckedChange={(checked) => 
+                    handleInputChange("includeFlights", Boolean(checked))
+                  }
+                />
+                <Label htmlFor="includeFlights">
+                  Include flight search results
+                </Label>
+              </div>
             </div>
 
             <Button
@@ -235,7 +274,7 @@ const Index = () => {
             <Card className="p-6 shadow-lg bg-white/80 backdrop-blur-sm">
               <h2 className="text-2xl font-semibold mb-4">Your Trip Plan</h2>
               <div className="prose prose-sm md:prose-base lg:prose-lg max-w-none dark:prose-invert prose-headings:font-semibold prose-a:text-primary">
-                <div className="whitespace-pre-wrap markdown">{tripPlan}</div>
+                <ReactMarkdown>{tripPlan}</ReactMarkdown>
               </div>
             </Card>
           </motion.div>
