@@ -27,6 +27,7 @@ import { cn } from "@/lib/utils";
 import { generateTripPlan } from "@/lib/gemini";
 import { searchFlights } from "@/lib/serpapi";
 import { FlightTable } from "@/components/FlightTable";
+import { ChatInterface } from "@/components/ChatInterface";
 
 interface TripDetails {
   source: string;
@@ -286,6 +287,8 @@ const Index = () => {
                 <ReactMarkdown>{tripPlan}</ReactMarkdown>
               </div>
             </Card>
+
+            <ChatInterface tripPlan={tripPlan} />
           </motion.div>
         )}
       </motion.div>
