@@ -18,15 +18,16 @@ export const searchFlights = async ({
 
   // The date should already be in YYYY-MM-DD format from the form
   try {
-    const response = await fetch(
-      `https://serpapi.com/search.json?engine=google_flights&departure_id=${sourceCode}&arrival_id=${destinationCode}&outbound_date=${date}&currency=USD&hl=en&type=2&api_key=${apiKey}`,
-      {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-        },
-      }
-    );
+    const targetUrl = `https://serpapi.com/search.json?engine=google_flights&departure_id=${sourceCode}&arrival_id=${destinationCode}&outbound_date=${date}&currency=USD&hl=en&type=2&api_key=${apiKey}`;
+    const proxyUrl = `https://cors-anywhere.herokuapp.com/${targetUrl}`;
+
+    const response = await fetch(proxyUrl, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+    });
 
     if (!response.ok) {
       const errorData = await response.json();
