@@ -71,11 +71,12 @@ const Index = () => {
     setIsLoading(true);
     try {
       let flightInfo = "";
-      if (formData.includeFlights && serpApiKey) {
+      if (formData.includeFlights && serpApiKey && date) {
+        const formattedDate = date.toISOString().split('T')[0];
         const flights = await searchFlights({
           source: formData.source,
           destination: formData.destination,
-          date: formData.dates,
+          date: formattedDate,
           apiKey: serpApiKey,
         });
         setFlightData(flights);
